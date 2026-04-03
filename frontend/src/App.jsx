@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 
 function App() {
   const [backendMessage, setBackendMessage] = useState('Connecting to server...')
@@ -8,7 +7,7 @@ function App() {
     fetch('http://localhost:5000/api/test-db')
       .then(response => response.json())
       .then(data => {
-        setBackendMessage(data.message); 
+        setBackendMessage(data.message);
       })
       .catch(error => {
         console.error("Error fetching data: ", error);
@@ -17,15 +16,14 @@ function App() {
   }, []);
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h1>🌍 ReLife App</h1>
-      <h2>Connection Test</h2>
-      
-      <div style={{ padding: '20px', backgroundColor: '#f0f0f0', borderRadius: '10px', marginTop: '20px', display: 'inline-block' }}>
-        <h3>Server Status:</h3>
-        <p style={{ color: backendMessage.includes('successful') ? 'green' : 'red', fontWeight: 'bold', fontSize: '1.2rem' }}>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
+      <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center">
+        <h1 className="text-4xl font-extrabold text-blue-600 mb-2">🌍 ReLife App</h1>
+        <h2 className="text-xl font-semibold text-gray-500 mb-6">Sprint 2: Tailwind CSS Active</h2>
+        
+        <div className={`p-4 rounded-lg font-bold text-lg ${backendMessage.includes('successful') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
           {backendMessage}
-        </p>
+        </div>
       </div>
     </div>
   )
