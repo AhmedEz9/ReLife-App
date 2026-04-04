@@ -7,23 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Käyttäjä (User) taulu
+// The User table
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
   username  String
   password  String
-  projects  Project[] 
-  createdAt DateTime  @default(now())
+  createdAt DateTime @default(now())
+  
+  // A User can have many Posts 
+  posts     Post[]   
 }
 
-// Projekti (Post/Upload) taulu
-model Project {
+// The Post table for Circular Economy items
+model Post {
   id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  imageUrl    String?  
+  title       String   // e.g., "Used Bicycle"
+  description String?  // e.g., "Good condition, needs new tires" (The '?' makes it optional)
+  imageUrl    String   // The link to the file in our uploads folder
+  createdAt   DateTime @default(now())
+  
+  // This links the Post back to the specific User who uploaded it
   userId      Int
   user        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
 }
