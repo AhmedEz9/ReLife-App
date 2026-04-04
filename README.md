@@ -33,39 +33,35 @@ This project was built to fulfill the core requirements of a Multi Platform Proj
 
 ### 1. Clone the repository
 
-\`\`\`bash
 git clone https://github.com/YOUR-USERNAME/ReLife-App.git
 cd ReLife-App
-\`\`\`
 
 ### 2. Setup the Backend
 
-\`\`\`bash
 cd backend
 npm install
-\`\`\`
+
 _Create a `.env` file in the backend folder and add your Neon Database URL:_
-\`\`\`env
+env
 DATABASE_URL="postgresql://username:password@your-neon-host.neon.tech/neondb?sslmode=require"
 PORT=5000
-\`\`\`
+
 _Initialize the database:_
-\`\`\`bash
+
 npx prisma migrate dev
-\`\`\`
+
 _Start the backend server:_
-\`\`\`bash
+
 npm run dev
-\`\`\`
 
 ### 3. Setup the Frontend
 
 Open a new terminal window:
-\`\`\`bash
+
 cd frontend
 npm install
 npm run dev
-\`\`\`
+
 _The app will be running at `http://localhost:5173`._
 
 ---
