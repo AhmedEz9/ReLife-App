@@ -70,3 +70,28 @@ router.get('/', async (req, res) => {
 });
 
 module.exports = router;
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const postId = parseInt(req.params.id);
+
+        // 1. Check if the post exists
+        const post = await prisma.post.findUnique({
+            where: { id: postId }
+        });
+
+        if (!post) {
+            return res.status(404).json({ error: "Post not found." });
+        }
+
+        // 2. Delete the post from the database
+        await prisma.post.delete({
+            where: { id: postId }
+        });
+
+        res.json({ message: "Post deleted successfully!" });
+    } catch (error) {
+        console.error("Delete error:", error);
+        res.status(500).json({ error: "Server error while deleting post." });
+    }
+});
