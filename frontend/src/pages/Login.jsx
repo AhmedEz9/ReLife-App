@@ -1,82 +1,89 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
-  
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
     try {
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setIsError(false);
         setMessage('Login successful!');
-        // Save the digital ticket (token) securely in the browser
-        localStorage.setItem('token', data.token);
-        
-        setTimeout(() => navigate('/'), 2000); 
+        setTimeout(() => navigate('/feed'), 1000);
       } else {
         setIsError(true);
         setMessage(data.error || 'Login failed.');
       }
     } catch (error) {
+      console.error(error);
       setIsError(true);
       setMessage('Server error. Is the backend running?');
     }
   };
 
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full">
-      <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">Welcome Back</h2>
-      
-      {message && (
-        <div className={`p-3 mb-4 rounded-lg text-sm font-semibold text-center ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
-          {message}
-        </div>
-      )}
+    <div className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl border border-white max-w-md w-full relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-2xl opacity-20"></div>
+      <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-400 rounded-full mix-blend-multiply filter blur-2xl opacity-20"></div>
 
-      <form onSubmit={handleLogin} className="space-y-4">
-        <div>
-          <label className="block text-gray-600 text-sm font-semibold mb-2">Email</label>
-          <input 
-            type="email" 
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-gray-600 text-sm font-semibold mb-2">Password</label>
-          <input 
-            type="password" 
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-300">
-          Sign In
-        </button>
-      </form>
+      <div className="relative z-10">
+        <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500 mb-2 text-center drop-shadow-sm">
+          Welcome Back
+        </h2>
+        <p className="text-gray-500 text-center mb-8 font-medium">Log in to continue to ReLife.</p>
+        
+        {message && (
+          <div className={`p-4 mb-6 rounded-xl text-sm font-bold text-center shadow-sm ${isError ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
+            {message}
+          </div>
+        )}
 
-      <p className="mt-6 text-center text-sm text-gray-500">
-        Don't have an account? <Link to="/register" className="text-blue-600 font-semibold hover:underline">Register here</Link>
-      </p>
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2 ml-1">Email Address</label>
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 pl-4 rounded-xl border border-gray-200 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:bg-white transition-all shadow-inner text-gray-700"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2 ml-1">Password</label>
+            <input 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 pl-4 rounded-xl border border-gray-200 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:bg-white transition-all shadow-inner text-gray-700"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          
+          <button type="submit" className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 mt-2">
+            Log In
+          </button>
+        </form>
+
+        <p className="text-center text-gray-500 mt-6 text-sm font-medium">
+          Don't have an account? <Link to="/register" className="text-green-600 hover:text-green-700 font-bold hover:underline">Sign up here</Link>
+        </p>
+      </div>
     </div>
   );
 }
