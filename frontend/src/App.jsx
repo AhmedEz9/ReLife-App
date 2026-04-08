@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Upload from './pages/Upload';
 import Feed from './pages/Feed';
+import Profile from './pages/Profile'; 
 
 function App() {
   return (
@@ -23,6 +24,10 @@ function App() {
             <div className="space-x-4 flex items-center">
               <Link to="/login" className="text-gray-500 font-semibold hover:text-green-600 transition">Login</Link>
               <Link to="/register" className="text-gray-500 font-semibold hover:text-green-600 transition">Register</Link>
+              
+              {/* Added Profile Link here! */}
+              <Link to="/profile" className="text-emerald-600 font-bold hover:text-emerald-700 transition">My Profile</Link>
+              
               <Link to="/upload" className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-5 py-2.5 rounded-full font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200">
                 + Upload
               </Link>
@@ -38,6 +43,9 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/upload" element={<Upload />} />
+            
+            {/* Added Profile Route here! */}
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
       </div>

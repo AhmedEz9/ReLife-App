@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
+const verifyToken = require('../middleware/auth'); 
 
 const router = express.Router();
 const prisma = new PrismaClient(); 
@@ -69,8 +70,21 @@ router.get('/', async (req, res) => {
     }
 });
 
-module.exports = router;
+// Get strictly the logged-in user's posts
+router.get('/my-posts', verifyToken, async (req, res) => {
+    try {
+        const posts = await prisma.post.findMany({
+            where: { userId: req.user.userId }, 
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(posts);
+    } catch (error) {
+        console.error("Fetch user posts error:", error);
+        res.status(500).json({ error: "Server error while fetching your posts." });
+    }
+});
 
+// Delete a post
 router.delete('/:id', async (req, res) => {
     try {
         const postId = parseInt(req.params.id);
@@ -95,3 +109,5 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ error: "Server error while deleting post." });
     }
 });
+
+module.exports = router;

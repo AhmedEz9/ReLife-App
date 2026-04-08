@@ -2,11 +2,12 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
+const verifyToken = require('../middleware/auth'); 
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// REGISTER ROUTE: Creates a new user
+// Creates a new user
 router.post('/register', async (req, res) => {
     try {
         const { email, username, password } = req.body;
@@ -37,7 +38,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// LOGIN ROUTE: Authenticates an existing user
+// Authenticates an existing user
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -69,6 +70,24 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ error: "Server error during login." });
+    }
+});
+
+// Uses the token to return the logged-in user's profile
+router.get('/me', verifyToken, async (req, res) => {
+    try {
+        // req.user.userId comes from the verified token!
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.userId },
+            select: { id: true, username: true, email: true, createdAt: true } 
+        });
+
+        if (!user) return res.status(404).json({ error: "User not found." });
+        
+        res.json(user);
+    } catch (error) {
+        console.error("Profile fetch error:", error);
+        res.status(500).json({ error: "Server error while fetching profile." });
     }
 });
 

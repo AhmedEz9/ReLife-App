@@ -17,10 +17,19 @@ function Login() {
         body: JSON.stringify({ email, password })
       });
       const data = await response.json();
+      
       if (response.ok) {
+        // 1. Save the token so the Profile page can use it
+        localStorage.setItem('token', data.token);
+        
+        // 2. Save the user info just in case I need it later
+        localStorage.setItem('user', JSON.stringify(data.user));
+
         setIsError(false);
         setMessage('Login successful!');
-        setTimeout(() => navigate('/feed'), 1000);
+        
+        // Straight to the profile page to see it working!
+        setTimeout(() => navigate('/profile'), 1000);
       } else {
         setIsError(true);
         setMessage(data.error || 'Login failed.');
