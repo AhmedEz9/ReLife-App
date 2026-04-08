@@ -1,30 +1,53 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Upload() {
-  const [file, setFile] = useState(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
   const [message, setMessage] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
   };
 
-  const handleUpload = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!file) {
+    // Make sure they provided an image and title
+    if (!image || !title) {
       setIsError(true);
-      setMessage('Please select a file first.');
+      setMessage('Please provide at least a title and an image.');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('image', file);
+    setIsLoading(true);
 
     try {
+      // 1. Get user data from local storage
+      const token = localStorage.getItem('token');
+      const userStr = localStorage.getItem('user');
+      const user = userStr ? JSON.parse(userStr) : null;
+      
+      // If no user is found, default to ID 1 (or handle the error)
+      const userId = user ? user.id : 1; 
+
+      // 2. Package the text and the file together using FormData
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('userId', userId);
+      formData.append('image', image);
+
+      // 3. Send it to the backend!
       const response = await fetch('http://localhost:5000/api/upload', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}` 
+        },
         body: formData 
       });
 
@@ -32,32 +55,30 @@ function Upload() {
 
       if (response.ok) {
         setIsError(false);
-        setMessage('Item uploaded successfully!');
-        setImageUrl(data.post.imageUrl); // Updated to match Prisma response
+        setMessage('Item shared successfully! Redirecting...');
+        setTimeout(() => navigate('/feed'), 1500);
       } else {
         setIsError(true);
-        setMessage(data.error || 'Upload failed.');
+        setMessage(data.error || 'Failed to upload item.');
       }
     } catch (error) {
       console.error(error);
       setIsError(true);
       setMessage('Server error. Is the backend running?');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl border border-white max-w-lg w-full relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute -top-12 -right-12 w-40 h-40 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-      <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+    <div className="max-w-2xl mx-auto w-full relative">
+      {/* Decorative background glow */}
+      <div className="fixed top-20 right-10 w-64 h-64 bg-green-400 rounded-full mix-blend-multiply filter blur-[100px] opacity-30 z-0 pointer-events-none"></div>
+      <div className="fixed bottom-20 left-10 w-64 h-64 bg-teal-400 rounded-full mix-blend-multiply filter blur-[100px] opacity-30 z-0 pointer-events-none"></div>
 
-      <div className="relative z-10">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-500 mb-2 drop-shadow-sm">
-            Recycle an Item
-          </h2>
-          <p className="text-gray-500 font-medium">Upload a picture of what you want to share.</p>
-        </div>
+      <div className="relative z-10 bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl border border-white">
+        <h2 className="text-3xl font-extrabold text-gray-800 mb-2 text-center">Share an Item</h2>
+        <p className="text-gray-500 text-center mb-8 font-medium">Give your unwanted items a second life.</p>
         
         {message && (
           <div className={`p-4 mb-6 rounded-xl text-sm font-bold text-center shadow-sm ${isError ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
@@ -65,30 +86,61 @@ function Upload() {
           </div>
         )}
 
-        <form onSubmit={handleUpload} className="space-y-6">
-          <div className="bg-white/50 p-6 rounded-2xl border border-gray-100 shadow-inner">
-            <label className="block text-gray-700 text-sm font-bold mb-3 ml-1">Select an Image</label>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          
+          {/* Title Field */}
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2 ml-1">Item Title *</label>
             <input 
-              type="file" 
-              accept="image/*"
-              onChange={handleFileChange}
-              className="w-full text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-gradient-to-r file:from-green-50 file:to-emerald-50 file:text-green-700 hover:file:bg-green-100 transition-all cursor-pointer"
+              type="text" 
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full p-3 pl-4 rounded-xl border border-gray-200 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all text-gray-700"
+              placeholder="e.g., Vintage Wooden Chair"
+              required
             />
           </div>
-          
-          <button type="submit" className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-4 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 text-lg">
-            Share with Community
-          </button>
-        </form>
 
-        {imageUrl && (
-          <div className="mt-8 animate-fade-in-up">
-            <p className="text-center text-sm font-bold text-green-600 mb-3 uppercase tracking-wider">Success! Live Preview:</p>
-            <div className="rounded-2xl overflow-hidden shadow-lg border-4 border-white">
-              <img src={imageUrl} alt="Uploaded preview" className="w-full object-cover max-h-64" />
+          {/* Description Field */}
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2 ml-1">Description</label>
+            <textarea 
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows="4"
+              className="w-full p-3 pl-4 rounded-xl border border-gray-200 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all text-gray-700 resize-none"
+              placeholder="Describe the condition, dimensions, and pickup details..."
+            />
+          </div>
+
+          {/* Image Upload Field */}
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2 ml-1">Item Image *</label>
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex justify-center bg-white/50 hover:bg-gray-50 transition-colors">
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition-all"
+                required
+              />
             </div>
           </div>
-        )}
+
+          {/* Submit Button */}
+          <button 
+            type="submit" 
+            disabled={isLoading}
+            className={`w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold py-4 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 mt-4 flex justify-center items-center ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          >
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+            ) : (
+              'Upload Item'
+            )}
+          </button>
+
+        </form>
       </div>
     </div>
   );

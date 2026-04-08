@@ -84,8 +84,8 @@ router.get('/my-posts', verifyToken, async (req, res) => {
     }
 });
 
-// Delete a post
-router.delete('/:id', async (req, res) => {
+// Only the owner can delete their post
+router.delete('/:id', verifyToken, async (req, res) => {
     try {
         const postId = parseInt(req.params.id);
 
@@ -98,7 +98,12 @@ router.delete('/:id', async (req, res) => {
             return res.status(404).json({ error: "Post not found." });
         }
 
-        // 2. Delete the post from the database
+        // 2. Does the logged-in user own this post?
+        if (post.userId !== req.user.userId) {
+            return res.status(403).json({ error: "Unauthorized: You can only delete your own items." });
+        }
+
+        // 3. Delete the post from the database
         await prisma.post.delete({
             where: { id: postId }
         });

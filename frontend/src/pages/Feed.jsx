@@ -5,6 +5,10 @@ function Feed() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Grab the currently logged-in user from local storage
+  const currentUserStr = localStorage.getItem('user');
+  const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -22,14 +26,24 @@ function Feed() {
 
   const handleDelete = async (postId) => {
     if (!window.confirm("Are you sure you want to delete this item?")) return;
+    
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("You must be logged in to do this.");
+        return;
+      }
+
       const response = await fetch(`http://localhost:5000/api/upload/${postId}`, {
         method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` } 
       });
+      
       if (response.ok) {
         setPosts(posts.filter(post => post.id !== postId));
       } else {
-        alert("Failed to delete the post.");
+        const data = await response.json();
+        alert(data.error || "Failed to delete the post.");
       }
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -94,14 +108,16 @@ function Feed() {
           {filteredPosts.map((post) => (
             <div key={post.id} className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg border border-white overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative group">
               
-              {/* Delete Button */}
-              <button 
-                onClick={() => handleDelete(post.id)}
-                className="absolute top-4 right-4 bg-red-500/90 backdrop-blur-sm hover:bg-red-600 text-white p-2.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
-                title="Delete Post"
-              >
-                🗑️
-              </button>
+              {/* Delete Button - Only shows if logged-in user owns this post */}
+              {currentUser && currentUser.username === post.user?.username && (
+                <button 
+                  onClick={() => handleDelete(post.id)}
+                  className="absolute top-4 right-4 bg-red-500/90 backdrop-blur-sm hover:bg-red-600 text-white p-2.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+                  title="Delete Post"
+                >
+                  🗑️
+                </button>
+              )}
 
               <div className="relative h-64 overflow-hidden">
                 <img 

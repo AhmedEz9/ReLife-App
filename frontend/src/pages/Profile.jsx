@@ -53,6 +53,36 @@ function Profile() {
     navigate('/login');               
   };
 
+  // DELETE ITEM!
+  const handleDelete = async (itemId) => {
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("You must be logged in to do this.");
+        return;
+      }
+      
+      // Send the request with the digital ticket
+      const response = await fetch(`http://localhost:5000/api/upload/${itemId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` } 
+      });
+
+      if (response.ok) {
+        // Update the screen immediately by filtering out the deleted item
+        setMyItems(prevItems => prevItems.filter(item => item.id !== itemId));
+      } else {
+        const data = await response.json();
+        alert(data.error || "Failed to delete item.");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Server error while deleting.");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
@@ -118,7 +148,11 @@ function Profile() {
                   <div className="p-5 flex justify-between items-center">
                     <h4 className="font-bold text-gray-800 truncate">{item.title}</h4>
                     {/* The Delete button */}
-                    <button className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors" title="Delete Item">
+                    <button 
+                      onClick={() => handleDelete(item.id)}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors" 
+                      title="Delete Item"
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
