@@ -84,6 +84,42 @@ router.get('/my-posts', verifyToken, async (req, res) => {
     }
 });
 
+// The owner can edit their post's title and description
+router.put('/:id', verifyToken, async (req, res) => {
+    try {
+        const postId = parseInt(req.params.id);
+        const { title, description } = req.body; 
+
+        // 1. Check if the post exists
+        const post = await prisma.post.findUnique({
+            where: { id: postId }
+        });
+
+        if (!post) {
+            return res.status(404).json({ error: "Post not found." });
+        }
+
+        // 2. Does the logged-in user own this post?
+        if (post.userId !== req.user.userId) {
+            return res.status(403).json({ error: "Unauthorized: You can only edit your own items." });
+        }
+
+        // 3. Update the post in the database
+        const updatedPost = await prisma.post.update({
+            where: { id: postId },
+            data: { 
+                title: title || post.title, 
+                description: description !== undefined ? description : post.description 
+            }
+        });
+
+        res.json({ message: "Post updated successfully!", post: updatedPost });
+    } catch (error) {
+        console.error("Update error:", error);
+        res.status(500).json({ error: "Server error while updating post." });
+    }
+});
+
 // Only the owner can delete their post
 router.delete('/:id', verifyToken, async (req, res) => {
     try {
