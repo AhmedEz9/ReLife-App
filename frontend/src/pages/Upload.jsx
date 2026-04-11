@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Upload() {
   const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Furniture'); 
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState('');
@@ -17,7 +18,7 @@ function Upload() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Make sure they provided an image and title
+    // Basic validation: Ensure title and image are provided
     if (!image || !title) {
       setIsError(true);
       setMessage('Please provide at least a title and an image.');
@@ -35,9 +36,10 @@ function Upload() {
       // If no user is found, default to ID 1 (or handle the error)
       const userId = user ? user.id : 1; 
 
-      // 2. Package the text and the file together using FormData
+      // 2. Package the text, category, and file together using FormData
       const formData = new FormData();
       formData.append('title', title);
+      formData.append('category', category); 
       formData.append('description', description);
       formData.append('userId', userId);
       formData.append('image', image);
@@ -99,6 +101,24 @@ function Upload() {
               placeholder="e.g., Vintage Wooden Chair"
               required
             />
+          </div>
+
+          {/* Category Dropdown */}
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2 ml-1">Category *</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full p-3 pl-4 rounded-xl border border-gray-200 bg-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all text-gray-700 appearance-none"
+              required
+            >
+              <option value="Furniture">Furniture</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Books">Books</option>
+              <option value="Home & Garden">Home & Garden</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
 
           {/* Description Field */}

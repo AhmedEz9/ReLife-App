@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Upgraded Upload Route
+// Upload Route
 router.post('/', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
@@ -29,6 +29,7 @@ router.post('/', upload.single('image'), async (req, res) => {
         // 1. Get the text data sent along with the image
         const title = req.body.title || "Untitled Item";
         const description = req.body.description || "";
+        const category = req.body.category || "Other"; 
         const userId = parseInt(req.body.userId) || 1; 
 
         // 2. Create the file URL
@@ -39,6 +40,7 @@ router.post('/', upload.single('image'), async (req, res) => {
             data: {
                 title: title,
                 description: description,
+                category: category, 
                 imageUrl: fileUrl,
                 userId: userId
             }
@@ -84,11 +86,11 @@ router.get('/my-posts', verifyToken, async (req, res) => {
     }
 });
 
-// The owner can edit their post's title and description
+// The owner can edit their post's title, description, and category
 router.put('/:id', verifyToken, async (req, res) => {
     try {
         const postId = parseInt(req.params.id);
-        const { title, description } = req.body; 
+        const { title, description, category } = req.body; 
 
         // 1. Check if the post exists
         const post = await prisma.post.findUnique({
@@ -109,7 +111,8 @@ router.put('/:id', verifyToken, async (req, res) => {
             where: { id: postId },
             data: { 
                 title: title || post.title, 
-                description: description !== undefined ? description : post.description 
+                description: description !== undefined ? description : post.description,
+                category: category || post.category
             }
         });
 

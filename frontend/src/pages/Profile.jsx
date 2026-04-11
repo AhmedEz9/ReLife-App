@@ -12,8 +12,8 @@ function Profile() {
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
+  const [editCategory, setEditCategory] = useState(''); 
 
-  // Fetch the user's real profile data and their items
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -48,14 +48,12 @@ function Profile() {
     fetchProfileData();
   }, [navigate]);
 
-  // LOGOUT!
   const handleLogout = () => {
     localStorage.removeItem('token'); 
     localStorage.removeItem('user');  
     navigate('/login');               
   };
 
-  // DELETE ITEM!
   const handleDelete = async (itemId) => {
     if (!window.confirm("Are you sure you want to delete this item?")) return;
 
@@ -81,19 +79,17 @@ function Profile() {
   };
 
   // --- EDIT FUNCTIONS ---
-  // When the user clicks the edit icon
   const handleEditClick = (item) => {
     setEditingId(item.id);
     setEditTitle(item.title);
     setEditDescription(item.description || '');
+    setEditCategory(item.category || 'Other'); 
   };
 
-  // When the user cancels editing
   const handleCancelEdit = () => {
     setEditingId(null);
   };
 
-  // When the user clicks save
   const handleSaveEdit = async (itemId) => {
     try {
       const token = localStorage.getItem('token');
@@ -105,13 +101,14 @@ function Profile() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ title: editTitle, description: editDescription })
+        // Send the category along with title and description
+        body: JSON.stringify({ title: editTitle, description: editDescription, category: editCategory })
       });
 
       if (response.ok) {
-        // Update the item in React state so the UI updates instantly
+        // Update the item in our React state including the new category
         setMyItems(prevItems => prevItems.map(item => 
-          item.id === itemId ? { ...item, title: editTitle, description: editDescription } : item
+          item.id === itemId ? { ...item, title: editTitle, description: editDescription, category: editCategory } : item
         ));
         setEditingId(null); 
       } else {
@@ -180,6 +177,10 @@ function Profile() {
                 <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 flex flex-col">
                   
                   <div className="h-48 overflow-hidden relative shrink-0">
+                    {/* Badge showing current category */}
+                    <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-emerald-700 shadow-sm">
+                      {item.category || 'Other'}
+                    </div>
                     <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                   </div>
                   
@@ -194,6 +195,19 @@ function Profile() {
                           onChange={(e) => setEditTitle(e.target.value)}
                           className="w-full p-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 font-bold text-gray-800"
                         />
+                        {/* Category Dropdown in Edit Mode */}
+                        <select
+                          value={editCategory}
+                          onChange={(e) => setEditCategory(e.target.value)}
+                          className="w-full p-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 text-sm text-gray-700 bg-white"
+                        >
+                          <option value="Furniture">Furniture</option>
+                          <option value="Electronics">Electronics</option>
+                          <option value="Clothing">Clothing</option>
+                          <option value="Books">Books</option>
+                          <option value="Home & Garden">Home & Garden</option>
+                          <option value="Other">Other</option>
+                        </select>
                         <textarea 
                           value={editDescription}
                           onChange={(e) => setEditDescription(e.target.value)}

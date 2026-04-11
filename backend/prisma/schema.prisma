@@ -23,8 +23,9 @@ model User {
 model Post {
   id          Int      @id @default(autoincrement())
   title       String   // e.g., "Used Bicycle"
-  description String?  // e.g., "Good condition, needs new tires" (The '?' makes it optional)
+  description String?  // e.g., "Good condition, needs new tires"
   imageUrl    String   // The link to the file in our uploads folder
+  category    String   @default("Other")  // The category tag for filtering
   createdAt   DateTime @default(now())
   
   // This links the Post back to the specific User who uploaded it
