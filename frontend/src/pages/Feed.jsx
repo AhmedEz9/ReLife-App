@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import HowItWorks from '../components/HowItWorks'; 
 
 function Feed() {
   const [posts, setPosts] = useState([]);
@@ -86,6 +87,9 @@ function Feed() {
         </h2>
         <p className="text-gray-600 font-medium text-lg">Give items a second life. Browse what your community is sharing.</p>
       </div>
+
+      {/* How It Works Banner */}
+      <HowItWorks />
       
       {/* Floating Search Bar */}
       <div className="mb-6 flex justify-center">

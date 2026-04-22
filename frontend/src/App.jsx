@@ -4,6 +4,7 @@ import Register from './pages/Register';
 import Upload from './pages/Upload';
 import Feed from './pages/Feed';
 import Profile from './pages/Profile'; 
+import Footer from './components/Footer'; 
 
 function App() {
   return (
@@ -48,6 +49,10 @@ function App() {
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
+
+        {/* Added the Footer at the very bottom! */}
+        <Footer />
+        
       </div>
     </Router>
   );
