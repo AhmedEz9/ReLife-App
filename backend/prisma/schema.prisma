@@ -26,6 +26,7 @@ model Post {
   description String?  // e.g., "Good condition, needs new tires"
   imageUrl    String   // The link to the file in our uploads folder
   category    String   @default("Other")  // The category tag for filtering
+  status      String   @default("Available") // <-- NEW: Tracks if the item is Available or Claimed
   createdAt   DateTime @default(now())
   
   // This links the Post back to the specific User who uploaded it
