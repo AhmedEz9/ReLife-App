@@ -12,7 +12,7 @@ function Profile() {
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
-  const [editCategory, setEditCategory] = useState(''); 
+  const [editCategory, setEditCategory] = useState('');
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -78,12 +78,44 @@ function Profile() {
     }
   };
 
+  // --- Mark as Claimed Function ---
+  const handleToggleClaim = async (itemId, currentStatus) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return alert("You must be logged in to do this.");
+
+      // If it's Available, make it Claimed. If it's Claimed, make it Available again!
+      const newStatus = currentStatus === 'Available' ? 'Claimed' : 'Available';
+
+      const response = await fetch(`http://localhost:5000/api/upload/${itemId}`, {
+        method: 'PUT',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        setMyItems(prevItems => prevItems.map(item => 
+          item.id === itemId ? { ...item, status: newStatus } : item
+        ));
+      } else {
+        const data = await response.json();
+        alert(data.error || "Failed to update status.");
+      }
+    } catch (err) {
+      console.error("Status update error:", err);
+      alert("Server error while updating status.");
+    }
+  };
+
   // --- EDIT FUNCTIONS ---
   const handleEditClick = (item) => {
     setEditingId(item.id);
     setEditTitle(item.title);
     setEditDescription(item.description || '');
-    setEditCategory(item.category || 'Other'); 
+    setEditCategory(item.category || 'Other');
   };
 
   const handleCancelEdit = () => {
@@ -101,12 +133,10 @@ function Profile() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        // Send the category along with title and description
         body: JSON.stringify({ title: editTitle, description: editDescription, category: editCategory })
       });
 
       if (response.ok) {
-        // Update the item in our React state including the new category
         setMyItems(prevItems => prevItems.map(item => 
           item.id === itemId ? { ...item, title: editTitle, description: editDescription, category: editCategory } : item
         ));
@@ -174,19 +204,25 @@ function Profile() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {myItems.map(item => (
-                <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 flex flex-col">
+                <div key={item.id} className={`bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 flex flex-col transition-all duration-300 ${item.status === 'Claimed' ? 'opacity-70 grayscale-[50%]' : ''}`}>
                   
                   <div className="h-48 overflow-hidden relative shrink-0">
-                    {/* Badge showing current category */}
                     <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-emerald-700 shadow-sm">
                       {item.category || 'Other'}
                     </div>
+                    {/* Show Claimed overlay over the image */}
+                    {item.status === 'Claimed' && (
+                      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-20">
+                        <span className="bg-gray-800/90 text-white px-4 py-2 rounded-full font-bold tracking-widest uppercase shadow-lg border border-gray-600">
+                          Claimed
+                        </span>
+                      </div>
+                    )}
                     <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                   </div>
                   
                   <div className="p-5 flex-grow flex flex-col justify-between">
                     
-                    {/* Check if this item is the one being edited */}
                     {editingId === item.id ? (
                       <div className="space-y-3 mb-4">
                         <input 
@@ -195,7 +231,6 @@ function Profile() {
                           onChange={(e) => setEditTitle(e.target.value)}
                           className="w-full p-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 font-bold text-gray-800"
                         />
-                        {/* Category Dropdown in Edit Mode */}
                         <select
                           value={editCategory}
                           onChange={(e) => setEditCategory(e.target.value)}
@@ -212,7 +247,6 @@ function Profile() {
                           value={editDescription}
                           onChange={(e) => setEditDescription(e.target.value)}
                           className="w-full p-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 text-sm text-gray-600 resize-none h-20"
-                          placeholder="Description..."
                         />
                         <div className="flex space-x-2">
                           <button onClick={() => handleSaveEdit(item.id)} className="flex-1 bg-green-500 text-white py-1.5 rounded-lg font-bold hover:bg-green-600 transition">Save</button>
@@ -226,28 +260,23 @@ function Profile() {
                           <p className="text-xs text-gray-500 line-clamp-2">{item.description || "No description."}</p>
                         </div>
                         
-                        <div className="flex justify-end space-x-2 border-t border-gray-100 pt-3 mt-auto">
-                          {/* Edit Button */}
+                        <div className="flex justify-between items-center border-t border-gray-100 pt-3 mt-auto">
+                          {/* Claim Button */}
                           <button 
-                            onClick={() => handleEditClick(item)}
-                            className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-2 rounded-lg transition-colors" 
-                            title="Edit Item"
+                            onClick={() => handleToggleClaim(item.id, item.status)}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-colors ${item.status === 'Claimed' ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'}`}
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
+                            {item.status === 'Claimed' ? 'Unclaim' : 'Mark Claimed'}
                           </button>
-                          
-                          {/* Delete Button */}
-                          <button 
-                            onClick={() => handleDelete(item.id)}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors" 
-                            title="Delete Item"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                            </svg>
-                          </button>
+
+                          <div className="flex space-x-1">
+                            <button onClick={() => handleEditClick(item)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-2 rounded-lg transition-colors" title="Edit Item">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                            </button>
+                            <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors" title="Delete Item">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                            </button>
+                          </div>
                         </div>
                       </>
                     )}

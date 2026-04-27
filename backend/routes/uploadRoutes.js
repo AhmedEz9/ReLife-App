@@ -35,7 +35,7 @@ router.post('/', upload.single('image'), async (req, res) => {
         // 2. Create the file URL
         const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
 
-        // 3. Save everything to the database!
+        // 3. Save everything to the database! (Status defaults to "Available" automatically)
         const newPost = await prisma.post.create({
             data: {
                 title: title,
@@ -86,11 +86,11 @@ router.get('/my-posts', verifyToken, async (req, res) => {
     }
 });
 
-// The owner can edit their post's title, description, and category
+// The owner can edit their post's title, description, category, AND STATUS
 router.put('/:id', verifyToken, async (req, res) => {
     try {
         const postId = parseInt(req.params.id);
-        const { title, description, category } = req.body; 
+        const { title, description, category, status } = req.body; 
 
         // 1. Check if the post exists
         const post = await prisma.post.findUnique({
@@ -112,7 +112,8 @@ router.put('/:id', verifyToken, async (req, res) => {
             data: { 
                 title: title || post.title, 
                 description: description !== undefined ? description : post.description,
-                category: category || post.category
+                category: category || post.category,
+                status: status || post.status 
             }
         });
 
