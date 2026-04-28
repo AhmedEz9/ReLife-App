@@ -17,7 +17,7 @@ function Feed() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/upload');
+        const response = await fetch('https://relife-backend.onrender.com/api/upload');
         const data = await response.json();
         setPosts(data);
         setIsLoading(false);
@@ -39,7 +39,7 @@ function Feed() {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/upload/${postId}`, {
+      const response = await fetch(`https://relife-backend.onrender.com/api/upload/${postId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` } 
       });

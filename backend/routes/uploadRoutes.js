@@ -33,7 +33,7 @@ router.post('/', upload.single('image'), async (req, res) => {
         const userId = parseInt(req.body.userId) || 1; 
 
         // 2. Create the file URL
-        const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+        const fileUrl = `https://relife-backend.onrender.com/uploads/${req.file.filename}`;
 
         // 3. Save everything to the database! (Status defaults to "Available" automatically)
         const newPost = await prisma.post.create({

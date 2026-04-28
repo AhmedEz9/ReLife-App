@@ -45,7 +45,7 @@ function Upload() {
       formData.append('image', image);
 
       // 3. Send it to the backend!
-      const response = await fetch('http://localhost:5000/api/upload', {
+      const response = await fetch('https://relife-backend.onrender.com/api/upload', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}` 

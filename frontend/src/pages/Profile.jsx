@@ -23,14 +23,14 @@ function Profile() {
           return;
         }
 
-        const userRes = await fetch('http://localhost:5000/api/auth/me', {
+        const userRes = await fetch('https://relife-backend.onrender.com/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!userRes.ok) throw new Error('Failed to fetch user');
         const userData = await userRes.json();
         setUser(userData);
 
-        const postsRes = await fetch('http://localhost:5000/api/upload/my-posts', {
+        const postsRes = await fetch('https://relife-backend.onrender.com/api/upload/my-posts', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!postsRes.ok) throw new Error('Failed to fetch posts');
@@ -61,7 +61,7 @@ function Profile() {
       const token = localStorage.getItem('token');
       if (!token) return alert("You must be logged in to do this.");
       
-      const response = await fetch(`http://localhost:5000/api/upload/${itemId}`, {
+      const response = await fetch(`https://relife-backend.onrender.com/api/upload/${itemId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` } 
       });
@@ -87,7 +87,7 @@ function Profile() {
       // If it's Available, make it Claimed. If it's Claimed, make it Available again!
       const newStatus = currentStatus === 'Available' ? 'Claimed' : 'Available';
 
-      const response = await fetch(`http://localhost:5000/api/upload/${itemId}`, {
+      const response = await fetch(`https://relife-backend.onrender.com/api/upload/${itemId}`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -127,7 +127,7 @@ function Profile() {
       const token = localStorage.getItem('token');
       if (!token) return alert("You must be logged in to do this.");
 
-      const response = await fetch(`http://localhost:5000/api/upload/${itemId}`, {
+      const response = await fetch(`https://relife-backend.onrender.com/api/upload/${itemId}`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,
