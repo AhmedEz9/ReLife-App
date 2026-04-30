@@ -168,18 +168,25 @@ function Profile() {
         
         {/* Profile Header Card */}
         {user && (
-          <div className="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white flex flex-col md:flex-row items-center gap-6">
-            <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-3xl font-extrabold shadow-lg border-4 border-white uppercase">
+          <div className="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white flex flex-col md:flex-row items-center gap-6 overflow-hidden">
+            
+            {/* Avatar - Added shrink-0 so it doesn't get squished */}
+            <div className="w-24 h-24 shrink-0 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-3xl font-extrabold shadow-lg border-4 border-white uppercase">
               {user.username.charAt(0)}
             </div>
-            <div className="text-center md:text-left">
-              <h2 className="text-3xl font-extrabold text-gray-800">{user.username}</h2>
-              <p className="text-gray-500 font-medium">{user.email}</p>
+            
+            {/* Text Container - Added flex-1 and min-w-0 to contain the width */}
+            <div className="text-center md:text-left flex-1 min-w-0 w-full">
+              {/* Added text-2xl for mobile, and break-all to force wrapping */}
+              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800 break-all">{user.username}</h2>
+              <p className="text-gray-500 font-medium break-all">{user.email}</p>
               <div className="mt-3 inline-block px-4 py-1.5 bg-green-100 text-green-700 text-sm font-bold rounded-full border border-green-200">
                 Active Recycler
               </div>
             </div>
-            <div className="md:ml-auto mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
+            
+            {/* Buttons - Added shrink-0 */}
+            <div className="md:ml-auto mt-4 md:mt-0 flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
                <Link to="/upload" className="px-6 py-3 bg-white text-emerald-600 border border-emerald-200 font-bold rounded-xl shadow-sm hover:bg-emerald-50 transition-all text-center">
                   + Share New Item
                </Link>
@@ -187,6 +194,7 @@ function Profile() {
                   Logout
                </button>
             </div>
+            
           </div>
         )}
 
