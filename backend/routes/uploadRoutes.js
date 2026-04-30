@@ -1,19 +1,19 @@
 const express = require('express');
 const multer = require('multer');
-const path = require('path');
+const cloudinary = require('cloudinary').v2; 
+const { CloudinaryStorage } = require('multer-storage-cloudinary'); 
 const { PrismaClient } = require('@prisma/client');
 const verifyToken = require('../middleware/auth'); 
 
 const router = express.Router();
 const prisma = new PrismaClient(); 
 
-// Configure Multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); 
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+// Configure Cloudinary Storage
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'relife-app-uploads', 
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'gif'] 
     }
 });
 
@@ -32,10 +32,11 @@ router.post('/', upload.single('image'), async (req, res) => {
         const category = req.body.category || "Other"; 
         const userId = parseInt(req.body.userId) || 1; 
 
-        // 2. Create the file URL
-        const fileUrl = `https://relife-backend.onrender.com/uploads/${req.file.filename}`;
+        // 2. Get the permanent Cloudinary URL! 
+        // (Cloudinary automatically stores the URL inside req.file.path)
+        const fileUrl = req.file.path;
 
-        // 3. Save everything to the database! (Status defaults to "Available" automatically)
+        // 3. Save everything to the database
         const newPost = await prisma.post.create({
             data: {
                 title: title,
@@ -59,7 +60,6 @@ router.post('/', upload.single('image'), async (req, res) => {
 // Get all posts for the Feed
 router.get('/', async (req, res) => {
     try {
-        // Fetch all posts and include the username of the person who posted it
         const posts = await prisma.post.findMany({
             include: { user: { select: { username: true } } },
             orderBy: { createdAt: 'desc' } 
@@ -86,13 +86,12 @@ router.get('/my-posts', verifyToken, async (req, res) => {
     }
 });
 
-// The owner can edit their post's title, description, category, AND STATUS
+// The owner can edit their post
 router.put('/:id', verifyToken, async (req, res) => {
     try {
         const postId = parseInt(req.params.id);
         const { title, description, category, status } = req.body; 
 
-        // 1. Check if the post exists
         const post = await prisma.post.findUnique({
             where: { id: postId }
         });
@@ -101,12 +100,10 @@ router.put('/:id', verifyToken, async (req, res) => {
             return res.status(404).json({ error: "Post not found." });
         }
 
-        // 2. Does the logged-in user own this post?
         if (post.userId !== req.user.userId) {
             return res.status(403).json({ error: "Unauthorized: You can only edit your own items." });
         }
 
-        // 3. Update the post in the database
         const updatedPost = await prisma.post.update({
             where: { id: postId },
             data: { 
@@ -129,7 +126,6 @@ router.delete('/:id', verifyToken, async (req, res) => {
     try {
         const postId = parseInt(req.params.id);
 
-        // 1. Check if the post exists
         const post = await prisma.post.findUnique({
             where: { id: postId }
         });
@@ -138,12 +134,10 @@ router.delete('/:id', verifyToken, async (req, res) => {
             return res.status(404).json({ error: "Post not found." });
         }
 
-        // 2. Does the logged-in user own this post?
         if (post.userId !== req.user.userId) {
             return res.status(403).json({ error: "Unauthorized: You can only delete your own items." });
         }
 
-        // 3. Delete the post from the database
         await prisma.post.delete({
             where: { id: postId }
         });
