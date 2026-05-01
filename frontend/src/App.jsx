@@ -81,6 +81,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<Navigate to="/feed" replace />} />
           </Routes>
         </div>
 
