@@ -30,7 +30,7 @@ To test the core features of the app without registering a new account, please u
 <br><br>
 <img src="./assets/feed-page.png" width="500" alt="Feed & Search View">
 <br><br>
-<img src="./assets/upload-pag" width="500" alt="Upload Item View">
+<img src="./assets/upload-page.png" width="500" alt="Upload Item View">
 
 ## 🗄️ Database Architecture
 
