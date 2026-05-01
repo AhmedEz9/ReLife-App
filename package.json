@@ -1,0 +1,23 @@
+{
+  "name": "relife-app",
+  "version": "1.0.0",
+  "description": "ReLife is a full-stack web application designed to promote sustainable development and the circular economy. This platform allows users to recycle, share, and find second-hand items within their community, reducing waste and giving items a \"re-life.\"",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AhmedEz9/ReLife-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AhmedEz9/ReLife-App/issues"
+  },
+  "homepage": "https://github.com/AhmedEz9/ReLife-App#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0"
+  }
+}
