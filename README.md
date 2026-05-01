@@ -26,11 +26,11 @@ To test the core features of the app without registering a new account, please u
 
 ## 📸 Interface Screenshots
 
-<img src="./assets/testLogin.png" width="800" alt="Login Page">
+<img src="./assets/login-page.png" width="500" alt="Login Page">
 <br><br>
-<img src="./assets/test2.png" width="800" alt="Feed & Search View">
+<img src="./assets/feed-page.png" width="500" alt="Feed & Search View">
 <br><br>
-<img src="./assets/test3.png" width="800" alt="Upload Item View">
+<img src="./assets/upload-pag" width="500" alt="Upload Item View">
 
 ## 🗄️ Database Architecture
 
@@ -72,13 +72,13 @@ Testing was a major focus of this development cycle to ensure stability. The tes
 - **API Integration (Postman/Thunder Client):** Ensured the frontend forms communicate properly with the PostgreSQL database.
 - **E2E Testing (Playwright):** Simulated a real user logging in and navigating the app.
 
-<img src="./assets/test2.png" width="800" alt="Backend Unit Testing">
+<img src="./assets/test2.png" width="500" alt="Backend Unit Testing">
 <br><br>
-<img src="./assets/test3.png" width="800" alt="Frontend Component Testing">
+<img src="./assets/test3.png" width="500" alt="Frontend Component Testing">
 <br><br>
-<img src="./assets/test5.png" width="800" alt="E2E Playwright Pass">
+<img src="./assets/test5.png" width="500" alt="E2E Playwright Pass">
 <br><br>
-<img src="./assets/test4.png" width="800" alt="API Integration Pass">
+<img src="./assets/test4.png" width="500" alt="API Integration Pass">
 
 ## 🛠️ Tech Stack
 
