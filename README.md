@@ -6,9 +6,9 @@ This project was built to fulfill the core requirements of the Multi Platform Pr
 
 ## 🔗 Live Links & Access
 
-- **Live Frontend (Vercel):** [[Insert your Vercel link here](https://re-life-app.vercel.app/)]
-- **Live API (Render):** [relife-backend.onrender.com]
-- **API Documentation:** [ReLife API Postman Collection](./docs/ReLife_API_Collection.json)
+- **Live Frontend (Vercel):** [https://re-life-app.vercel.app](https://re-life-app.vercel.app)
+- **Live API (Render):** [https://relife-backend.onrender.com](https://relife-backend.onrender.com)
+- **API Documentation:** [ReLife API Postman Collection](https://github.com/AhmedEz9/ReLife-App/blob/main/docs/Relife.postman_collection.json)
 
 **Login Details:**
 To test the core features of the app without registering a new account, please use these test credentials:
@@ -26,9 +26,11 @@ To test the core features of the app without registering a new account, please u
 
 ## 📸 Interface Screenshots
 
-- ![Login Page](./assets/login-page.png)
-- ![Feed & Search View](./assets/feed-page.png)
-- ![Upload Item View](./assets/upload-page.png)
+<img src="./assets/testLogin.png" width="800" alt="Login Page">
+<br><br>
+<img src="./assets/test2.png" width="800" alt="Feed & Search View">
+<br><br>
+<img src="./assets/test3.png" width="800" alt="Upload Item View">
 
 ## 🗄️ Database Architecture
 
@@ -70,10 +72,13 @@ Testing was a major focus of this development cycle to ensure stability. The tes
 - **API Integration (Postman/Thunder Client):** Ensured the frontend forms communicate properly with the PostgreSQL database.
 - **E2E Testing (Playwright):** Simulated a real user logging in and navigating the app.
 
-- ![Backend Unit Testing](./assets/test2.png)
-- ![Frontend Component Testing](./assets/test3.png)
-- ![E2E Playwright Pass](./assets/test5.png)
-- ![API Integration Pass](./assets/test4.png)
+<img src="./assets/test2.png" width="800" alt="Backend Unit Testing">
+<br><br>
+<img src="./assets/test3.png" width="800" alt="Frontend Component Testing">
+<br><br>
+<img src="./assets/test5.png" width="800" alt="E2E Playwright Pass">
+<br><br>
+<img src="./assets/test4.png" width="800" alt="API Integration Pass">
 
 ## 🛠️ Tech Stack
 
@@ -85,6 +90,7 @@ Testing was a major focus of this development cycle to ensure stability. The tes
 ## 🐛 Known Bugs & Limitations
 
 - No major breaking bugs are known at this time.
+- The links and buttons located in the website's footer are placeholders for visual purposes only and do not currently lead to active pages.
 
 ## 📚 References & Resources
 
