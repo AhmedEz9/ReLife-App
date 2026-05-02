@@ -92,12 +92,37 @@ Testing was a major focus of this development cycle to ensure stability. The tes
 - No major breaking bugs are known at this time.
 - The links and buttons located in the website's footer are placeholders for visual purposes only and do not currently lead to active pages.
 
-## 📚 References & Resources
+### 📚 References & Resources
 
-- Course materials.
-- Tailwind CSS Documentation
-- Prisma ORM Documentation
-- Cloudinary Node.js Upload Integration Guide
+**Core Technologies**
+
+- Course materials (Multi-Platform Project TX00EY70)
+- [React Documentation](https://react.dev/)
+- [Express.js Documentation](https://expressjs.com/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+
+**Database & Media**
+
+- [Prisma ORM Documentation](https://www.prisma.io/docs/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Cloudinary Node.js Upload Integration Guide](https://cloudinary.com/documentation/node_integration)
+- [Multer Middleware for Node.js](https://github.com/expressjs/multer)
+
+**Security & Authentication**
+
+- [JSON Web Tokens (JWT) Introduction](https://jwt.io/introduction)
+- [bcrypt.js npm package](https://www.npmjs.com/package/bcryptjs)
+
+**Testing & Tools**
+
+- [Playwright E2E Testing Documentation](https://playwright.dev/)
+- [Jest Testing Framework](https://jestjs.io/)
+- [Postman API Platform](https://www.postman.com/)
+
+**Deployment**
+
+- [Vercel Deployment Guide](https://vercel.com/docs)
+- [Render Web Services Documentation](https://render.com/docs)
 
 ---
 
@@ -106,7 +131,7 @@ Testing was a major focus of this development cycle to ensure stability. The tes
 ### 1. Clone the repository
 
 ```bash
-git clone [https://https://github.com/AhmedEz9/ReLife-App.git](https://github.com/AhmedEz9/ReLife-App.git)
+git clone https://github.com/AhmedEz9/ReLife-App.git
 cd ReLife-App
 ```
 
