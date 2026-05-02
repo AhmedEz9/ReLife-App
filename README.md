@@ -148,4 +148,4 @@ npm run dev
 _The app will be running at `http://localhost:5173`._
 
 To view the database data:
-Run `npm run studio` in the backend folder. This will open a GUI in your browser at http://localhost:5555.
+Run `npm run studio` in the backend folder. This will open a GUI in your browser at `http://localhost:5555`.
