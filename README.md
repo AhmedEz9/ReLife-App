@@ -96,7 +96,7 @@ Testing was a major focus of this development cycle to ensure stability. The tes
 
 **Core Technologies**
 
-- Course materials (Multi-Platform Project TX00EY70)
+- Course materials
 - [React Documentation](https://react.dev/)
 - [Express.js Documentation](https://expressjs.com/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
