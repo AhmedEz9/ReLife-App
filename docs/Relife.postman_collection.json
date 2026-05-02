@@ -7,7 +7,7 @@
   },
   "item": [
     {
-      "name": "https://relife-backend.onrender.com/api/auth/login",
+      "name": "login",
       "request": {
         "auth": {
           "type": "noauth"
@@ -35,6 +35,120 @@
             "api",
             "auth",
             "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Register User",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"securepassword123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://relife-backend.onrender.com/api/auth/register",
+          "protocol": "https",
+          "host": [
+            "relife-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Posts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://relife-backend.onrender.com/api/upload",
+          "protocol": "https",
+          "host": [
+            "relife-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "upload"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "uuid": "68df764b-9f52-4085-b02d-7164665312f0",
+              "src": "/C:/Users/ahmed/Desktop/Thames-Chair-May-2015-Oak-THMBEN000301-e1551885527301.jpg"
+            },
+            {
+              "key": "title",
+              "value": "My Test Chair",
+              "type": "text",
+              "uuid": "8d9df043-41e6-4ef3-915f-5faccef99aea"
+            },
+            {
+              "key": "description",
+              "value": "Testing the upload",
+              "type": "text",
+              "uuid": "2146a197-e971-4726-8062-177f196b713b"
+            },
+            {
+              "key": "category",
+              "value": "Furniture",
+              "type": "text",
+              "uuid": "4fe14c41-9ed9-46be-bc82-4f6e3ce8ff29"
+            },
+            {
+              "key": "userId",
+              "value": "1",
+              "type": "text",
+              "uuid": "cac3a49d-7b8f-4a5c-a470-449755aa14b7"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://relife-backend.onrender.com/api/upload",
+          "protocol": "https",
+          "host": [
+            "relife-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "upload"
           ]
         }
       },
